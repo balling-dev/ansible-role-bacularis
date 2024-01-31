@@ -1,0 +1,69 @@
+# Copyright 2024 Kristoffer Winther Balling
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# Continuous Deployment
+#
+# shellcheck disable=SC2086
+
+---
+
+name: Continuous Deployment
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  generate-changelog:
+    name: "Generate changelog"
+    runs-on: "ubuntu-22.04"
+    outputs:
+      release_body: "${{ steps.git-cliff.outputs.content }}"
+    steps:
+      - name: "Checkout"
+        uses: "actions/checkout@v4.1.1"
+        with:
+          fetch-depth: 0
+      - name: "Check typos"
+        uses: "crate-ci/typos@v1.17.1"
+      - name: "Generate a changelog"
+        uses: "orhun/git-cliff-action@v2.3.0"
+        id: "git-cliff"
+        with:
+          config: "cliff.toml"
+          args: "-vv --latest --strip header"
+        env:
+          OUTPUT: "CHANGES.md"
+  release:
+    runs-on: "ubuntu-22.04"
+    needs: generate-changelog
+    steps:
+      - name: "Create Ansible Galaxy release"
+        run: |
+          ansible-galaxy role import \
+            --api-key "${GALAXY_API_KEY}" \
+            "${GITHUB_REPOSITORY%/*}" "${GITHUB_REPOSITORY#*/}"
+        env:
+          GALAXY_API_KEY: "${{ secrets.galaxy_api_key }}"
+      - name: "Checkout"
+        uses: "actions/checkout@v4.1.1"
+      - name: "Get the release version from the tag"
+        if: "env.RELEASE_VERSION == ''"
+        run: echo "RELEASE_VERSION=${{ github.ref_name }}" >> "${GITHUB_ENV}"
+      - name: "Show the version"
+        run: |
+          echo "version is: ${RELEASE_VERSION}"
+      - name: "Create GitHub release"
+        env:
+          GITHUB_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+        run: |
+          gh release create "${RELEASE_VERSION}" \
+            --verify-tag \
+            --title "${RELEASE_VERSION}" \
+            --notes "${{ needs.generate-changelog.outputs.release_body }}"
+    outputs:
+      version: "${{ env.RELEASE_VERSION }}"

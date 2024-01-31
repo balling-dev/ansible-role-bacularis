@@ -1,0 +1,33 @@
+# Copyright 2024 Kristoffer Winther Balling
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# Molecule configuration for bacularis
+
+---
+
+dependency:
+  name: "galaxy"
+  options:
+    role-file: "requirements.yml"
+    requirements-file: "requirements.yml"
+
+driver:
+  name: "docker"
+
+platforms:
+  - name: "bacularis-${image:-ubuntu}-${tag:-latest}-${TOX_ENVNAME:-python}"
+    image: "${image:-ubuntu}:${tag:-latest}"
+    published_ports:
+      - 127.0.0.1:9097:9097/tcp
+    environment: {container: "docker"}
+
+provisioner:
+  name: "ansible"
+
+verifier:
+  name: "ansible"
+
+role_name_check: 2

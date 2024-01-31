@@ -1,0 +1,10 @@
+# Do not check internal github links
+https://github.com/balling-dev/ansible-role-bacularis.*
+
+# Do not check github searches (e.g. open issues)
+https://github.com/search?.*
+
+# Do not check services
+https://services.github.com/on-demand/github-cli/open-pull-request-github
+https://img.shields.io/ansible/quality/
+https://img.shields.io/ansible/role/d/

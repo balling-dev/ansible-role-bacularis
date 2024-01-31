@@ -1,0 +1,27 @@
+# Copyright 2024 Kristoffer Winther Balling
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# Meta data for bacularis
+
+---
+
+galaxy_info:
+  role_name: "bacularis"
+  description: >-
+    Install and configure bacularis - a web interface to configure, manage and
+    monitor the Bacula backup environment.
+  author: "balling_dev"
+  license: "MPL-2.0"
+  company: "none"
+  min_ansible_version: "2.12"
+  platforms:
+    - name: "Ubuntu"
+      versions:
+        - "jammy"
+  galaxy_tags:
+    - "bacularis"
+
+dependencies: [ ]

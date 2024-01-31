@@ -1,0 +1,45 @@
+---
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v4.4.0
+    hooks:
+      - id: trailing-whitespace
+      - id: end-of-file-fixer
+      - id: check-added-large-files
+
+  - repo: https://github.com/crate-ci/typos
+    rev: v1.17.0
+    hooks:
+      - id: typos
+
+  - repo: https://github.com/adrienverge/yamllint
+    rev: v1.33.0
+    hooks:
+      - id: yamllint
+        args:
+          - -c=.yamllint
+
+  - repo: https://github.com/robertdebock/pre-commit
+    rev: v1.5.2
+    hooks:
+      - id: ansible_role_find_unused_variable
+      - id: ansible_role_find_empty_files
+      - id: ansible_role_find_empty_directories
+      - id: ansible_role_find_undefined_handlers
+      - id: ansible_role_find_unquoted_values
+      - id: ansible_role_find_horizontal_when
+
+  - repo: local
+    hooks:
+      - id: links
+        name: Links
+        description: This hook checks that links are valid.
+        entry: lychee --cache .
+        language: system
+      - id: super-linter
+        name: Super-Linter
+        language: docker_image
+        entry: "\
+         -e RUN_LOCAL=true \
+         -v .:/tmp/lint \
+         ghcr.io/super-linter/super-linter:v5.7.2"

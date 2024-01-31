@@ -1,0 +1,68 @@
+# Copyright 2024 Kristoffer Winther Balling
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# Install file for bacularis
+
+---
+- name: "install | Install OS dependencies"
+  ansible.builtin.apt:
+    pkg:
+      - "apt-transport-https"
+      - "curl"
+      - "php"
+    update_cache: true
+
+- name: "install | Download apt repository GPG key"
+  ansible.builtin.shell: |
+    set -euo pipefail
+    curl https://pkgs.bacularis.app/bacularis.pub \
+    | gpg --dearmor \
+    | tee /usr/share/keyrings/bacularis.gpg > /dev/null
+  args:
+    executable: "/usr/bin/bash"
+    creates: "/usr/share/keyrings/bacularis.gpg"
+
+- name: "install | Add apt repository"
+  ansible.builtin.apt_repository:
+    repo: "deb [arch=amd64 signed-by=/usr/share/keyrings/bacularis.gpg] \
+      https://pkgs.bacularis.app/stable/ubuntu \
+      {{ ansible_distribution_release }} main"
+    state: "present"
+    filename: "bacularis"
+
+- name: "install | Add apt repository (src)"
+  ansible.builtin.apt_repository:
+    repo: "deb-src [signed-by=/usr/share/keyrings/bacularis.gpg] \
+      https://pkgs.bacularis.app/stable/ubuntu \
+      {{ ansible_distribution_release }} main"
+    state: "present"
+    filename: "bacularis"
+
+- name: "install | Install"
+  ansible.builtin.apt:
+    pkg:
+      - "bacularis"
+      - "bacularis-nginx"
+    state: "latest"
+    update_cache: true
+
+- name: "install | Enable services"
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: "started"
+    enabled: "yes"
+  with_items:
+    - "nginx"
+    - "php8.1-fpm"
+
+- name: "install | Configure NGINX"
+  ansible.builtin.file:
+    src: "/etc/nginx/sites-available/bacularis.conf"
+    dest: "/etc/nginx/sites-enabled/bacularis.conf"
+    owner: "root"
+    group: "root"
+    state: "link"
+  notify: "restart nginx"

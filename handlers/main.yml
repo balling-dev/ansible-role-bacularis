@@ -1,0 +1,17 @@
+# Copyright 2024 Kristoffer Winther Balling
+#
+# This Source Code Form is subject to the terms of the Mozilla Public
+# License, v. 2.0. If a copy of the MPL was not distributed with this
+# file, You can obtain one at https://mozilla.org/MPL/2.0/.
+#
+# Handlers for bacularis
+
+---
+
+- name: "restart nginx"
+  ansible.builtin.service:
+    name: "{{ item }}"
+    state: "restarted"
+  with_items:
+    - "nginx"
+    - "php8.1-fpm"

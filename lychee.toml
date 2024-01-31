@@ -1,0 +1,2 @@
+# Ignore partial urls in tasks
+exclude_path = ["tasks"]

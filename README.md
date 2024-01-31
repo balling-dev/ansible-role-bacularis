@@ -24,16 +24,3 @@ and is tested on each push, pull request and release.
   roles:
     - role: "balling-dev.bacularis"
 ```
-
-## Role Variables
-
-The default values for the variables are set in
-[`defaults/main.yml`](https://github.com/balling-dev/ansible-role-bacularis/blob/main/defaults/main.yml):
-
-```yaml
----
-# Defaults file for bacularis
-
-# Version of bacularis to install. Use "latest" to install latest version.
-bacularis_version: "latest"
-```

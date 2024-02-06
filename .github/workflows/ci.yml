@@ -31,7 +31,7 @@ jobs:
       - name: "Checkout"
         uses: "actions/checkout@v4.1.1"
       - name: "Check typos"
-        uses: "crate-ci/typos@v1.17.2"
+        uses: "crate-ci/typos@v1.18.1"
 
   lychee:
     name: "Links"

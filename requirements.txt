@@ -6,6 +6,6 @@
 #
 ansible-compat~=4.1.11
 molecule~=24.2.0
-molecule-plugins[docker]~=23.5.0
+molecule-plugins[docker]~=23.5.3
 ansible-lint~=24.2.0
 paramiko~=3.4.0

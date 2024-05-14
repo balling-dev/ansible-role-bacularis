@@ -4,7 +4,7 @@
 # License, v. 2.0. If a copy of the MPL was not distributed with this
 # file, You can obtain one at https://mozilla.org/MPL/2.0/.
 #
-ansible-compat~=4.1.11
+ansible-compat~=24.5.1
 molecule~=24.2.0
 molecule-plugins[docker]~=23.5.3
 ansible-lint~=24.2.0
